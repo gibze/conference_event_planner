@@ -6,6 +6,7 @@ import mealsReducer from './mealsSlice';
 
 
 
+\
 export default configureStore({
   reducer: {
     venue: venueReducer,
