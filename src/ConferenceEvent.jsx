@@ -4,6 +4,7 @@ import TotalCost from "./TotalCost";
 import { useSelector, useDispatch } from "react-redux";
 import { incrementQuantity, decrementQuantity } from "./venueSlice";
 import { incrementAvQuantity, decrementAvQuantity } from "./avSlice";
+import { toggleMealSelection } from "./mealSlice"
 
 const ConferenceEvent = () => {
 
@@ -48,8 +49,16 @@ const ConferenceEvent = () => {
     };
 
     const getItemsFromTotalCost = () => {
-        const items = [];
-    };
+        const item = mealsItems[index];
+        if (item.selected && item.type === "mealForPeople") {
+           // Ensure numberOfPeople is set before toggling selection
+           const newNumberOfPeople = item.selected ? numberOfPeople : 0;
+          dispatch(toggleMealSelection(index, newNumberOfPeople));
+        }
+        else {
+             dispatch(toggleMealSelection(index));
+             }     
+        };
 
     const items = getItemsFromTotalCost();
 
@@ -97,61 +106,8 @@ const ConferenceEvent = () => {
                     <button className="details_button" onClick={() => setShowItems(!showItems)}>
                         Show Details
                     </button>
-                    <div>
-                        avItems.map(item, index) => (
-                        <div className="av_data venue_main" key={index}>
-                            <div className = "img">
-                              <img src= {item.img} alt={item.name} />
-                              <div/>
-                            <div className="text"> {item.name} </div>
-                              <div> ${item.cost}</div>
-                                 <div>className= "addons_btn"
-                                   <button className="btn-warning" onClick={() => handleDecrementAvQuantity(index)}> &ndash; </button>
-                                   <span className="quantity-value">{item.quantity}</span>
-		                           <button className=" btn-success" onClick={() => handleIncrementAvQuantity(index)}> &#43; </button>
-		                         </div>
-                            </div> 
+                        </div>
                     
-                        </div>
-                        
-                        <div className="input-container venue_selection">
-	                      <label htmlFor="numberOfPeople"><h3>Number of People:</h3></label>
-                            <input type="number" className="input_box5" id="numberOfPeople" value={numberOfPeople}
-                         	onChange={(e) => {
-                            const value = parseInt(e.target.value);
-
-                              if (isNaN(value) || value < 1) {
-                                  setNumberOfPeople(1);
-                              } else {
-                                  setNumberOfPeople(value);
-                              }
-                              }}
-		                      min="1"
-	                        />
-                        </div>
-
-                        <div className="meal_selection">
-                        	{mealsItems.map((item, index) => (
-		                        <div className="meal_item" key={index} style={{ padding: 15 }}>
-			                        <div className="inner">
-				                        <input type="checkbox" id={ `meal_${index}` }
-					                       checked={ item.selected }
-        			                       onChange={() => handleMealSelection(index)}
-     			                        />
-				                    <label htmlFor={`meal_${index}`}> {item.name} </label>
-			                    </div>
-			                <div className="meal_cost">${item.cost}</div>
-		                </div>
-
-	))}
-</div>
-
-
-
-                     )
-
-                    </div>
-                </div>
             </navbar>
 
             <div className="main_container">
@@ -209,6 +165,23 @@ const ConferenceEvent = () => {
             >
              &#43;
             </button>
+
+            <div>
+                        avItems.map(item, index) => (
+                        <div className="av_data venue_main" key={index}>
+                            <div className = "img">
+                              <img src= {item.img} alt={item.name} />
+                              <div/>
+                            <div className="text"> {item.name} </div>
+                              <div> ${item.cost}</div>
+                                 <div>className= "addons_btn"
+                                   <button className="btn-warning" onClick={() => handleDecrementAvQuantity(index)}> &ndash; </button>
+                                   <span className="quantity-value">{item.quantity}</span>
+		                           <button className=" btn-success" onClick={() => handleIncrementAvQuantity(index)}> &#43; </button>
+		                         </div>
+                            </div> 
+                 </div>
+                  </div>
             
             
           </div>
@@ -244,10 +217,6 @@ const ConferenceEvent = () => {
 
                                     <h1>Meals Selection</h1>
                                 </div>
-
-                                <div className="input-container venue_selection">
-
-                                </div>
                                 <div className="meal_selection">
 
                                 </div>
@@ -255,6 +224,23 @@ const ConferenceEvent = () => {
 
 
                             </div>
+                            
+                            <div className="meal_selection">
+                        	{mealsItems.map((item, index) => (
+		                        <div className="meal_item" key={index} style={{ padding: 15 }}>
+			                        <div className="inner">
+				                        <input type="checkbox" id={ `meal_${index}` }
+					                       checked={ item.selected }
+        			                       onChange={() => handleMealSelection(index)}
+     			                        />
+				                       <label htmlFor={`meal_${index}`}> {item.name} </label>
+			                        </div>
+			                       <div className="meal_cost">${item.cost}</div>
+		                        </div>
+
+	                       ))}
+                           </div>
+
                         </div>
                     ) : (
                         <div className="total_amount_detail">
@@ -262,10 +248,22 @@ const ConferenceEvent = () => {
                         </div>
                     )
                 }
+                <div className="input-container venue_selection">
+                	<label htmlFor="numberOfPeople"><h3>Number of People:</h3></label>
+                    <input type="number" className="input_box5" id="numberOfPeople" value={numberOfPeople}
+	                onChange={(e) => {
+                    const value = parseInt(e.target.value);
 
-
-
-
+                if (isNaN(value) || value < 1) {
+                    setNumberOfPeople(1);
+                } else {
+                     setNumberOfPeople(value);
+                }
+                    }}
+          		     min="1"
+	                />
+                </div>
+            
             </div>
         </>
 
